@@ -1,3 +1,5 @@
+import { getStatusBarHeight, isIphoneX } from "react-native-iphone-x-helper";
+
 export default {
   colors: {
     primary: "#5636D3",
@@ -23,5 +25,6 @@ export default {
   },
   spacing: {
     paddingHorizontal: 24,
+    paddingHorizontalLandscape: isIphoneX() ? getStatusBarHeight() + 12 : 42,
   },
 };

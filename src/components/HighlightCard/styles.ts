@@ -1,9 +1,14 @@
 import { RFValue } from "react-native-responsive-fontsize";
 import { Feather } from "@expo/vector-icons";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 
-export const Container = styled.View`
-  background-color: ${({ theme }) => theme.colors.shape};
+type TypeProps = {
+  type: "up" | "down" | "total";
+};
+
+export const Container = styled.View<TypeProps>`
+  background-color: ${({ type, theme }) =>
+    type === "total" ? theme.colors.secondary : theme.colors.shape};
   width: ${RFValue(300)}px;
   border-radius: 5px;
   padding: 19px 23px;
@@ -16,29 +21,49 @@ export const Header = styled.View`
   justify-content: space-between;
 `;
 
-export const Title = styled.Text`
+export const Title = styled.Text<TypeProps>`
   font-size: ${RFValue(14)}px;
   font-family: ${({ theme }) => theme.fonts.regular};
-  color: ${({ theme }) => theme.colors.title};
+  color: ${({ type, theme }) =>
+    type === "total" ? theme.colors.shape : theme.colors.title};
 `;
 
-export const Icon = styled(Feather)`
+export const Icon = styled(Feather)<TypeProps>`
   font-size: ${RFValue(40)}px;
-  color: ${({ theme }) => theme.colors.success};
+
+  ${({ type }) =>
+    type === "up" &&
+    css`
+      color: ${({ theme }) => theme.colors.success};
+    `}
+
+  ${({ type }) =>
+    type === "down" &&
+    css`
+      color: ${({ theme }) => theme.colors.attention};
+    `}
+  
+  ${({ type }) =>
+    type === "total" &&
+    css`
+      color: ${({ theme }) => theme.colors.shape};
+    `}
 `;
 
 export const Footer = styled.View`
   margin-top: 38px;
 `;
 
-export const Amount = styled.Text`
+export const Amount = styled.Text<TypeProps>`
   font-size: ${RFValue(32)}px;
   font-family: ${({ theme }) => theme.fonts.medium};
-  color: ${({ theme }) => theme.colors.title};
+  color: ${({ type, theme }) =>
+    type === "total" ? theme.colors.shape : theme.colors.title};
 `;
 
-export const LastTransaction = styled.Text`
+export const LastTransaction = styled.Text<TypeProps>`
   font-size: ${RFValue(12)}px;
   font-family: ${({ theme }) => theme.fonts.regular};
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ type, theme }) =>
+    type === "total" ? theme.colors.shape : theme.colors.text};
 `;

@@ -1,5 +1,6 @@
 import React from "react";
 import { HighlightCard } from "../../components/HighlightCard";
+import { useOrientation } from "../../hooks/useOrientation";
 import {
   Container,
   Header,
@@ -14,10 +15,12 @@ import {
 } from "./styles";
 
 export function Dashboard() {
+  const { isPortrait } = useOrientation();
+
   return (
     <Container>
       <Header>
-        <UserWrapper>
+        <UserWrapper isPortrait={isPortrait}>
           <UserInfo>
             <Photo source={{ uri: "https://github.com/joaovitorleffa.png" }} />
             <User>
@@ -28,10 +31,25 @@ export function Dashboard() {
           <Icon name="power" />
         </UserWrapper>
       </Header>
-      <HighlightCards>
-        <HighlightCard />
-        <HighlightCard />
-        <HighlightCard />
+      <HighlightCards isPortrait={isPortrait}>
+        <HighlightCard
+          type="up"
+          title="Entrada"
+          amount="R$ 14.900,00"
+          lastTransaction="Última transação dia 15 de julho"
+        />
+        <HighlightCard
+          type="down"
+          title="Saida"
+          amount="R$ 14.900,00"
+          lastTransaction="Última transação dia 15 de julho"
+        />
+        <HighlightCard
+          type="total"
+          title="Total"
+          amount="R$ 14.900,00"
+          lastTransaction="Última transação dia 15 de julho"
+        />
       </HighlightCards>
     </Container>
   );

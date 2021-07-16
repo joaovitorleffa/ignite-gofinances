@@ -1,5 +1,6 @@
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
+import { IsPortraitProps } from "../../hooks/useOrientation";
 import { Feather } from "@expo/vector-icons";
 import styled from "styled-components/native";
 
@@ -14,14 +15,19 @@ export const Header = styled.View`
   background-color: ${({ theme }) => theme.colors.primary};
 `;
 
-export const UserWrapper = styled.View`
+export const UserWrapper = styled.View<IsPortraitProps>`
   width: 100%;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0px ${({ theme }) => theme.spacing.paddingHorizontal}px;
-  margin-top: ${getStatusBarHeight() + RFValue(28)}px;
+  padding: 0px
+    ${({ theme, isPortrait }) =>
+      isPortrait
+        ? theme.spacing.paddingHorizontal
+        : theme.spacing.paddingHorizontalLandscape}px;
+  margin-top: ${({ isPortrait }) =>
+    isPortrait ? getStatusBarHeight() + RFValue(28) : RFValue(28)}px;
 `;
 
 export const UserInfo = styled.View`
@@ -56,13 +62,17 @@ export const Icon = styled(Feather)`
   color: ${({ theme }) => theme.colors.secondary};
 `;
 
-export const HighlightCards = styled.ScrollView.attrs({
-  horizontal: true,
-  showsHorizontalScrollIndicator: false,
-  contentContainerStyle: {
-    paddingHorizontal: 24,
-  },
-})`
+export const HighlightCards = styled.ScrollView.attrs<IsPortraitProps>(
+  ({ isPortrait, theme }) => ({
+    horizontal: true,
+    showsHorizontalScrollIndicator: false,
+    contentContainerStyle: {
+      paddingHorizontal: isPortrait
+        ? theme.spacing.paddingHorizontal
+        : theme.spacing.paddingHorizontalLandscape,
+    },
+  })
+)<IsPortraitProps>`
   position: absolute;
   margin-top: ${RFPercentage(20)}px;
 `;
