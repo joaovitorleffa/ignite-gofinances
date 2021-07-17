@@ -15,6 +15,7 @@ export default {
 
     shape: "#FFFFFF",
     title: "#363F5F",
+    title_secondary: "#000000",
     text: "#969CB2",
     background: "#F0F2F5",
   },
@@ -24,7 +25,9 @@ export default {
     bold: "Poppins_700Bold",
   },
   spacing: {
-    paddingHorizontal: 24,
-    paddingHorizontalLandscape: isIphoneX() ? getStatusBarHeight() + 12 : 42,
+    portrait_horizontal_safe_area: 24,
+    landscape_horizontal_safe_area: isIphoneX()
+      ? getStatusBarHeight() + 12
+      : 42,
   },
 };

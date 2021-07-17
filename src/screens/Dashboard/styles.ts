@@ -1,8 +1,14 @@
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { getStatusBarHeight } from "react-native-iphone-x-helper";
+import {
+  getBottomSpace,
+  getStatusBarHeight,
+} from "react-native-iphone-x-helper";
 import { IsPortraitProps } from "../../hooks/useOrientation";
 import { Feather } from "@expo/vector-icons";
 import styled from "styled-components/native";
+import { FlatList } from "react-native";
+
+import { DataListProps } from "./";
 
 export const Container = styled.View`
   flex: 1;
@@ -24,8 +30,8 @@ export const UserWrapper = styled.View<IsPortraitProps>`
   padding: 0px
     ${({ theme, isPortrait }) =>
       isPortrait
-        ? theme.spacing.paddingHorizontal
-        : theme.spacing.paddingHorizontalLandscape}px;
+        ? theme.spacing.portrait_horizontal_safe_area
+        : theme.spacing.landscape_horizontal_safe_area}px;
   margin-top: ${({ isPortrait }) =>
     isPortrait ? getStatusBarHeight() + RFValue(28) : RFValue(28)}px;
 `;
@@ -68,11 +74,41 @@ export const HighlightCards = styled.ScrollView.attrs<IsPortraitProps>(
     showsHorizontalScrollIndicator: false,
     contentContainerStyle: {
       paddingHorizontal: isPortrait
-        ? theme.spacing.paddingHorizontal
-        : theme.spacing.paddingHorizontalLandscape,
+        ? theme.spacing.portrait_horizontal_safe_area
+        : theme.spacing.landscape_horizontal_safe_area,
     },
   })
 )<IsPortraitProps>`
   position: absolute;
   margin-top: ${RFPercentage(20)}px;
 `;
+
+export const Transactions = styled.View<IsPortraitProps>`
+  flex: 1;
+
+  margin-top: ${RFPercentage(12)}px;
+  margin-left: ${({ theme, isPortrait }) =>
+    isPortrait
+      ? theme.spacing.portrait_horizontal_safe_area
+      : theme.spacing.landscape_horizontal_safe_area}px;
+  margin-right: ${({ theme, isPortrait }) =>
+    isPortrait
+      ? theme.spacing.portrait_horizontal_safe_area
+      : theme.spacing.landscape_horizontal_safe_area}px;
+`;
+
+export const Title = styled.Text`
+  font-size: ${RFValue(18)}px;
+  color: ${({ theme }) => theme.colors.title_secondary};
+  font-family: ${({ theme }) => theme.fonts.regular};
+  margin-bottom: 16px;
+`;
+
+export const TransactionList = styled(
+  FlatList as new () => FlatList<DataListProps>
+).attrs({
+  showsVerticalScrollIndicator: false,
+  contentContainerStyle: {
+    paddingBottom: getBottomSpace(),
+  },
+})``;
