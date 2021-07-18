@@ -115,3 +115,13 @@ export const TransactionList = styled(
     paddingBottom: getBottomSpace(),
   },
 })``;
+
+export const LoadContainer = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Loading = styled.ActivityIndicator.attrs((props) => ({
+  color: props.theme.colors.primary,
+}))``;
