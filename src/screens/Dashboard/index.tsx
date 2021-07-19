@@ -74,40 +74,19 @@ export function Dashboard() {
   }
 
   function getDateInterval(collection: DataListProps[]) {
-    const lastTransactionEntries = Math.max.apply(
+    const lastTransaction = Math.max.apply(
       Math,
-      collection
-        .filter((item) => item.type === "positive")
-        .map((item) => new Date(item.date).getTime())
+      collection.map((item) => new Date(item.date).getTime())
     );
 
-    const lastTransactionExpensive = Math.max.apply(
+    const firstTransaction = Math.min.apply(
       Math,
-      collection
-        .filter((item) => item.type === "negative")
-        .map((item) => new Date(item.date).getTime())
+      collection.map((item) => new Date(item.date).getTime())
     );
 
-    const firstTransactionEntries = Math.min.apply(
-      Math,
-      collection
-        .filter((item) => item.type === "positive")
-        .map((item) => new Date(item.date).getTime())
-    );
-
-    const firstTransactionExpensive = Math.min.apply(
-      Math,
-      collection
-        .filter((item) => item.type === "negative")
-        .map((item) => new Date(item.date).getTime())
-    );
-
-    const last = Math.max(lastTransactionEntries, lastTransactionExpensive);
-    const first = Math.min(firstTransactionEntries, firstTransactionExpensive);
-
-    return `${new Date(first).getDate()} à ${new Date(
-      last
-    ).getDate()} de ${new Date(last).toLocaleString("pt-BR", {
+    return `${new Date(firstTransaction).getDate()} à ${new Date(
+      lastTransaction
+    ).getDate()} de ${new Date(lastTransaction).toLocaleString("pt-BR", {
       month: "long",
     })}`;
   }
