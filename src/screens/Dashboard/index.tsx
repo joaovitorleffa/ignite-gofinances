@@ -7,6 +7,7 @@ import {
   TransactionCard,
   TransactionCardProps,
 } from "../../components/TransactionCard";
+import { useAuth } from "../../hooks/auth";
 import { useOrientation } from "../../hooks/useOrientation";
 import { formatCurrencyToLocaleString } from "../../utils/currency";
 import { formatDateToLocaleString } from "../../utils/date";
@@ -46,6 +47,7 @@ interface HighlightData {
 
 export function Dashboard() {
   const { isPortrait } = useOrientation();
+  const { user, signOut } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
   const [transactions, setTransactions] = useState<DataListProps[]>([]);
@@ -91,7 +93,7 @@ export function Dashboard() {
   async function fetchTransaction() {
     let entriesSum = 0;
     let expensiveSum = 0;
-    const dataKey = "@gofinances:transactions";
+    const dataKey = `@gofinances:transactions_user:${user.id}`;
     try {
       const response = await AsyncStorage.getItem(dataKey);
       const transactions = response ? JSON.parse(response) : [];
@@ -119,30 +121,37 @@ export function Dashboard() {
         }
       );
 
-      const lastTransactionEntries = getLastTransactionDate(
-        transactions,
-        "positive"
-      );
+      const lastTransactionEntries =
+        transactions?.length === 0
+          ? 0
+          : getLastTransactionDate(transactions, "positive");
 
-      const lastTransactionExpensive = getLastTransactionDate(
-        transactions,
-        "negative"
-      );
+      const lastTransactionExpensive =
+        transactions?.length === 0
+          ? 0
+          : getLastTransactionDate(transactions, "negative");
 
-      const totalInterval = getDateInterval(transactions);
+      const totalInterval =
+        transactions?.length === 0 ? 0 : getDateInterval(transactions);
 
       setHighlightData({
         entries: {
           amount: formatCurrencyToLocaleString(entriesSum),
-          lastTransaction: `Última entrada em ${lastTransactionEntries}`,
+          lastTransaction:
+            lastTransactionEntries === 0
+              ? ""
+              : `Última entrada em ${lastTransactionEntries}`,
         },
         expensive: {
           amount: formatCurrencyToLocaleString(expensiveSum),
-          lastTransaction: `Última saída em ${lastTransactionExpensive}`,
+          lastTransaction:
+            lastTransactionExpensive === 0
+              ? ""
+              : `Última saída em ${lastTransactionExpensive}`,
         },
         total: {
           amount: formatCurrencyToLocaleString(entriesSum - expensiveSum),
-          lastTransaction: totalInterval,
+          lastTransaction: totalInterval === 0 ? "" : totalInterval,
         },
       });
       setTransactions(formattedTransactions);
@@ -169,15 +178,13 @@ export function Dashboard() {
           <Header>
             <UserWrapper isPortrait={isPortrait}>
               <UserInfo>
-                <Photo
-                  source={{ uri: "https://github.com/joaovitorleffa.png" }}
-                />
+                <Photo source={{ uri: user.photo }} />
                 <User>
                   <UserGreeting>Olá,</UserGreeting>
-                  <UserName>João Vitor</UserName>
+                  <UserName>{user.name}</UserName>
                 </User>
               </UserInfo>
-              <LogoutButton onPress={() => {}}>
+              <LogoutButton onPress={signOut}>
                 <Icon name="power" />
               </LogoutButton>
             </UserWrapper>

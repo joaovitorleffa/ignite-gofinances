@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/core";
 import * as Yup from "yup";
 
+import { useAuth } from "../../hooks/auth";
 import { useOrientation } from "../../hooks/useOrientation";
 
 import { CategorySelect } from "../CategorySelect";
@@ -44,6 +45,7 @@ interface FormData {
 
 export function Register() {
   const navigation = useNavigation();
+  const { user } = useAuth();
   const { isPortrait } = useOrientation();
   const {
     control,
@@ -52,7 +54,7 @@ export function Register() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
-  const dataKey = "@gofinances:transactions";
+  const dataKey = `@gofinances:transactions_user:${user.id}`;
 
   const [category, setCategory] = useState(categoryObj);
   const [transactionType, setTransactionType] = useState("");

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { VictoryPie } from "victory-native";
 import { RFValue } from "react-native-responsive-fontsize";
@@ -8,10 +8,12 @@ import { addMonths, subMonths, format } from "date-fns";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { ptBR } from "date-fns/locale";
 
-import { HistoryCard } from "../../components/HistoryCard";
-import { useOrientation } from "../../hooks/useOrientation";
+import { useAuth } from "../../hooks/auth";
 import { categories } from "../../utils/categories";
+import { useOrientation } from "../../hooks/useOrientation";
 import { formatCurrencyToLocaleString } from "../../utils/currency";
+
+import { HistoryCard } from "../../components/HistoryCard";
 
 import {
   Container,
@@ -26,7 +28,6 @@ import {
   LoadContainer,
   Loading,
 } from "./styles";
-import { ActivityIndicator } from "react-native";
 
 interface TransactionData {
   type: "negative" | "positive";
@@ -48,6 +49,7 @@ export function Resume() {
   const theme = useTheme();
   const height = useBottomTabBarHeight();
   const { isPortrait } = useOrientation();
+  const { user } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -65,7 +67,7 @@ export function Resume() {
 
   async function loadData() {
     setIsLoading(true);
-    const dataKey = "@gofinances:transactions";
+    const dataKey = `@gofinances:transactions_user:${user.id}`;
     const response = await AsyncStorage.getItem(dataKey);
     const transactions = response ? JSON.parse(response) : [];
 

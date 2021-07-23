@@ -56,9 +56,7 @@ export const SignInButtonContainer = styled.View<IsPortraitProps>`
         ? theme.spacing.portrait_horizontal_safe_area
         : theme.spacing.landscape_horizontal_safe_area}px;
 
-  flex: 1;
   flex-direction: ${({ isPortrait }) => (isPortrait ? "column" : "row")};
-  align-items: center;
 
   ${({ isPortrait }) =>
     !isPortrait &&
