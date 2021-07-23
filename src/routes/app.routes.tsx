@@ -7,14 +7,11 @@ import { Register } from "../screens/Register";
 import { Resume } from "../screens/Resume";
 import { useTheme } from "styled-components";
 import { RFValue } from "react-native-responsive-fontsize";
-import { Platform } from "react-native";
-import { useOrientation } from "../hooks/useOrientation";
 
 const Tab = createBottomTabNavigator();
 
 export function AppRoutes() {
   const theme = useTheme();
-  const { isPortrait } = useOrientation();
 
   return (
     <Tab.Navigator

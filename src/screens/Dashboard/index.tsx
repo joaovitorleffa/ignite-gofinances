@@ -51,9 +51,6 @@ export function Dashboard() {
   const [transactions, setTransactions] = useState<DataListProps[]>([]);
   const [highlightData, setHighlightData] = useState({} as HighlightData);
 
-  let entriesSum = 0;
-  let expensiveSum = 0;
-
   function getLastTransactionDate(
     collection: DataListProps[],
     type: "positive" | "negative"
@@ -92,6 +89,8 @@ export function Dashboard() {
   }
 
   async function fetchTransaction() {
+    let entriesSum = 0;
+    let expensiveSum = 0;
     const dataKey = "@gofinances:transactions";
     try {
       const response = await AsyncStorage.getItem(dataKey);

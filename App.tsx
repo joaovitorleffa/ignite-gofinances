@@ -4,6 +4,8 @@ import "react-native-gesture-handler";
 import "intl";
 import "intl/locale-data/jsonp/pt-BR";
 import AppLoading from "expo-app-loading";
+import { StatusBar } from "react-native";
+
 import {
   useFonts,
   Poppins_400Regular,
@@ -13,6 +15,8 @@ import {
 
 import theme from "./src/global/styles/theme";
 import { Routes } from "./src/routes/index.routes";
+import { SignIn } from "./src/screens/SignIn";
+import { AuthProvider } from "./src/hooks/auth";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -27,7 +31,11 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Routes />
+      <StatusBar barStyle="light-content" />
+      {/* <Routes /> */}
+      <AuthProvider>
+        <SignIn />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
