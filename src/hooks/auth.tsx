@@ -1,5 +1,7 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 import * as AuthSession from "expo-auth-session";
+import * as AppleAuthentication from "expo-apple-authentication";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type AuthProviderType = {
   children: ReactNode;
@@ -8,13 +10,14 @@ type AuthProviderType = {
 interface AuthContextData {
   user: User;
   signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
 }
 
 interface User {
   id: string;
   name: string;
   email: string;
-  photo: string;
+  photo?: string;
 }
 
 interface AuthorizationResponse {
@@ -48,12 +51,44 @@ function AuthProvider({ children }: AuthProviderType) {
           `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${params.access_token}`
         );
         const userInfo = await response.json();
-        setUser({
+        const loggedUser = {
           id: userInfo.id,
           email: userInfo.email,
           name: userInfo.giver_name,
           photo: userInfo.picture,
-        });
+        };
+        setUser(loggedUser);
+
+        await AsyncStorage.setItem(
+          "@gofinances:user",
+          JSON.stringify(loggedUser)
+        );
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async function signInWithApple() {
+    try {
+      const credentials = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        ],
+      });
+
+      if (credentials) {
+        const loggedUser = {
+          id: String(credentials.user),
+          email: credentials.email!,
+          name: credentials.fullName!.givenName!,
+        };
+        setUser(loggedUser);
+        await AsyncStorage.setItem(
+          "@gofinances:user",
+          JSON.stringify(loggedUser)
+        );
       }
     } catch (error) {
       throw new Error(error);
@@ -61,7 +96,7 @@ function AuthProvider({ children }: AuthProviderType) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, signInWithGoogle }}>
+    <AuthContext.Provider value={{ user, signInWithGoogle, signInWithApple }}>
       {children}
     </AuthContext.Provider>
   );
